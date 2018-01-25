@@ -8,7 +8,7 @@ To build and test code you will need **Visual Studio Build tools** 2013, 2015 or
 * [Build Tools for Visual Studio 2017](https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2017)
 * [cmake](https://cmake.org/)
 
-**There is no practical usa for these two shellcodes, and if you find any use scenarios please let me know.** Why writing these shellcodes? There is no any specific reason. I had C code for this laying on my computer for ages, and when friend of mine asked me about shellcode with .NET loading capability, I've remembered this code, and quickly ported it to shellcodes.
+**There is no practical use for these two shellcodes, and if you find any use scenarios please let me know.** Why writing these shellcodes? There is no any specific reason. I had C code for this laying on my computer for ages, and when friend of mine asked me about shellcode with .NET loading capability, I've remembered this code, and quickly ported it to shellcodes.
 
 Code will obtain [**ICorRuntimeHost**](https://docs.microsoft.com/en-us/dotnet/framework/unmanaged-api/hosting/icorruntimehost-interface) and then will look for [**DefaultDoman**](https://docs.microsoft.com/en-us/dotnet/framework/unmanaged-api/hosting/icorruntimehost-getdefaultdomain-method). After that .NET assembly will be loaded via [**Load_3**](https://docs.microsoft.com/en-us/dotnet/api/system.appdomain.load?view=netframework-4.7.1#System_AppDomain_Load_System_Byte___) and **entrypoint** will be invoked.
 
