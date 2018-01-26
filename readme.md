@@ -1,4 +1,4 @@
-# DotNet Load shellcode
+# DotNet Loader shellcode
 
 These are simple shellcodes which will load .NET Assembly from memory and execute it.
 
